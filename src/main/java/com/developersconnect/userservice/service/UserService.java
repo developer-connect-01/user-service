@@ -1,0 +1,176 @@
+package com.developersconnect.userservice.service;
+
+import com.developersconnect.userservice.dto.*;
+import com.developersconnect.userservice.model.*;
+import com.developersconnect.userservice.repository.UserRepository;
+import com.google.gson.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+@Service
+public class UserService {
+
+    private static final Logger logger = LogManager.getLogger(UserService.class);
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    private static final String RANDOM_USER_API_URL = "https://randomuser.me/api/";
+
+    public List<AppUser> fetchAndSaveUserResponse() {
+        logger.info("Fetching random user data from API");
+        String jsonString = restTemplate.getForObject(RANDOM_USER_API_URL, String.class);
+        logger.debug("Fetched JSON string: {}", jsonString);
+        JsonElement jsonElement = JsonParser.parseString(jsonString);
+        if (jsonElement.isJsonObject()) {
+            JsonObject jsonObject = jsonElement.getAsJsonObject();
+            JsonArray jsonArray = jsonObject.getAsJsonArray("results");
+
+            List<AppUser> users = new ArrayList<>();
+            List<UserDTO> results = mapUserDTO(jsonArray);
+            for (UserDTO userDTO : results) {
+                AppUser user = new AppUser();
+                mapUser(userDTO, user);
+                users.add(userRepository.save(user));
+            }
+            return users;
+        } else {
+            throw new JsonParseException("Expected JSON object");
+        }
+    }
+
+    List<UserDTO> mapUserDTO(JsonArray jsonArray){
+        List<UserDTO> results = new ArrayList<UserDTO>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+        for(int i = 0; i < jsonArray.size(); i++){
+            JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setGender(jsonObject.get("gender").getAsString());
+            userDTO.setTitle(jsonObject.get("name").getAsJsonObject().get("title").getAsString());
+            userDTO.setFirstName(jsonObject.get("name").getAsJsonObject().get("first").getAsString());
+            userDTO.setLastName(jsonObject.get("name").getAsJsonObject().get("last").getAsString());
+
+            LocationDTO locationDTO = new LocationDTO();
+            StreetDTO streetDTO = new StreetDTO();
+            streetDTO.setName(jsonObject.get("location").getAsJsonObject().get("street").getAsJsonObject().get("name").getAsString());
+            streetDTO.setNumber(jsonObject.get("location").getAsJsonObject().get("street").getAsJsonObject().get("number").getAsInt());
+            locationDTO.setStreetDTO(streetDTO);
+            locationDTO.setCity(jsonObject.get("location").getAsJsonObject().get("city").getAsString());
+            locationDTO.setState(jsonObject.get("location").getAsJsonObject().get("state").getAsString());
+            locationDTO.setCountry(jsonObject.get("location").getAsJsonObject().get("country").getAsString());
+            locationDTO.setPostcode(jsonObject.get("location").getAsJsonObject().get("postcode").getAsString());
+            locationDTO.setLatitude(jsonObject.get("location").getAsJsonObject().get("coordinates").getAsJsonObject().get("latitude").getAsString());
+            locationDTO.setLongitude(jsonObject.get("location").getAsJsonObject().get("coordinates").getAsJsonObject().get("longitude").getAsString());
+
+            userDTO.setLocationDTO(locationDTO);
+            userDTO.setEmail(jsonObject.get("email").getAsString());
+            userDTO.setUsername(jsonObject.get("login").getAsJsonObject().get("username").getAsString());
+
+            userDTO.setEmail(jsonObject.get("email").getAsString());
+            PasswordDTO passwordDTO = new PasswordDTO();
+            passwordDTO.setPassword(jsonObject.get("login").getAsJsonObject().get("password").getAsString());
+            passwordDTO.setSalt(jsonObject.get("login").getAsJsonObject().get("salt").getAsString());
+            passwordDTO.setMd5(jsonObject.get("login").getAsJsonObject().get("md5").getAsString());
+            passwordDTO.setSha1(jsonObject.get("login").getAsJsonObject().get("sha1").getAsString());
+            passwordDTO.setSha256(jsonObject.get("login").getAsJsonObject().get("sha256").getAsString());
+
+            userDTO.setPasswordDTO(passwordDTO);
+            try {
+                userDTO.setDob(dateFormat.parse(jsonObject.get("dob").getAsJsonObject().get("date").getAsString()));
+                userDTO.setRegistered(dateFormat.parse(jsonObject.get("registered").getAsJsonObject().get("date").getAsString()));
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
+            userDTO.setPhone(jsonObject.get("phone").getAsString());
+            userDTO.setCell(jsonObject.get("cell").getAsString());
+
+            PictureDTO pictureDTO = new PictureDTO();
+            pictureDTO.setLarge(jsonObject.get("picture").getAsJsonObject().get("large").getAsString());
+            pictureDTO.setMedium(jsonObject.get("picture").getAsJsonObject().get("medium").getAsString());
+            pictureDTO.setThumbnail(jsonObject.get("picture").getAsJsonObject().get("thumbnail").getAsString());
+            userDTO.setPictureDTO(pictureDTO);
+
+            userDTO.setNat(jsonObject.get("nat").getAsString());
+
+            results.add(userDTO);
+        }
+
+        return results;
+    }
+
+    void mapUser(UserDTO userDTO, AppUser user){
+        user.setGender(userDTO.getGender());
+        user.setTitle(userDTO.getTitle());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(setPassword(userDTO.getPasswordDTO()));
+        user.setDob(userDTO.getDob());
+        user.setRegistered(userDTO.getRegistered());
+        user.setPhone(userDTO.getPhone());
+        user.setCell(userDTO.getCell());
+        user.setPicture(setPicture(userDTO.getPictureDTO()));
+        user.setNat(userDTO.getNat());
+        user.setLocation(setLocation(userDTO.getLocationDTO()));
+    }
+    Password setPassword(PasswordDTO passwordDTO){
+        Password password = new Password();
+        password.setPassword(passwordDTO.getPassword());
+        password.setSalt(passwordDTO.getSalt());
+        password.setMd5(passwordDTO.getMd5());
+        password.setSha1(passwordDTO.getSha1());
+        password.setSha256(passwordDTO.getSha256());
+        return password;
+    }
+
+    Picture setPicture(PictureDTO pictureDTO){
+        Picture picture = new Picture();
+        picture.setLarge(pictureDTO.getLarge());
+        picture.setMedium(pictureDTO.getMedium());
+        picture.setThumbnail(pictureDTO.getThumbnail());
+        return picture;
+    }
+
+    Location setLocation(LocationDTO locationDTO){
+        Location location = new Location();
+        Street street = new Street();
+        street.setName(locationDTO.getStreetDTO().getName());
+        street.setNumber(locationDTO.getStreetDTO().getNumber());
+        location.setStreet(street);
+        location.setCity(locationDTO.getCity());
+        location.setState(locationDTO.getState());
+        location.setCountry(locationDTO.getCountry());
+        location.setPostcode(locationDTO.getPostcode());
+        location.setLongitude(locationDTO.getLongitude());
+        location.setLatitude(locationDTO.getLatitude());
+        return location;
+    }
+
+    public List<AppUser> findAll() {
+        return userRepository.findAll();
+    }
+
+    public Optional<AppUser> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public AppUser save(AppUser user) {
+        return userRepository.save(user);
+    }
+
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
+    }
+}
