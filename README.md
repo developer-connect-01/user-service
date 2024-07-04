@@ -5,11 +5,11 @@
 We are using spring boot technology mainly using three layer architecture (Controller, Services and Repository)
 
 there are mainly 5 entities are there
--- User
--- Location
--- Street
--- Password
--- Picture
+- User
+- Location
+- Street
+- Password
+- Picture
 
 ## Features
 
