@@ -27,12 +27,12 @@ Instructions to install and set up the project.
    git clone https://github.com/username/repository.git
    ```
 2. Navigate to the project directory:
-  ```bash
+   ```bash
    cd repository
    ```
 3. Install dependencies:
    ```bash
-   git clone https://github.com/username/repository.git
+   mvn install
    ```
 ## Folder structure
 ![image](https://github.com/developer-connect-01/user-service/assets/25847404/434c725b-9e43-47c8-9726-636d6531b044)
