@@ -24,11 +24,11 @@ Instructions to install and set up the project.
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/username/repository.git
+   git clone https://github.com/developer-connect-01/user-service.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd repository
+   cd user-service
    ```
 3. Install dependencies:
    ```bash
