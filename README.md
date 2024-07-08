@@ -36,3 +36,9 @@ Instructions to install and set up the project.
    ```
 ## Folder structure
 ![image](https://github.com/developer-connect-01/user-service/assets/25847404/434c725b-9e43-47c8-9726-636d6531b044)
+
+
+## Added Backend authentication
+- added Authentication using Spring security
+- Added a token based authentication
+- used [JWT Token](https://jwt.io/)

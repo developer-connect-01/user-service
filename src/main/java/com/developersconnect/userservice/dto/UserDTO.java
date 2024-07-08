@@ -16,7 +16,11 @@ public class UserDTO {
     private LocationDTO locationDTO;
     private String email;
     private String username;
-    private PasswordDTO passwordDTO;
+    private String password;
+    private String salt;
+    private String md5;
+    private String sha1;
+    private String sha256;
     private Date dob;
     private Date registered;
     private String phone;

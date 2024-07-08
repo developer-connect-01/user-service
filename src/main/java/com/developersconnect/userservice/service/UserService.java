@@ -77,14 +77,12 @@ public class UserService {
             userDTO.setUsername(jsonObject.get("login").getAsJsonObject().get("username").getAsString());
 
             userDTO.setEmail(jsonObject.get("email").getAsString());
-            PasswordDTO passwordDTO = new PasswordDTO();
-            passwordDTO.setPassword(jsonObject.get("login").getAsJsonObject().get("password").getAsString());
-            passwordDTO.setSalt(jsonObject.get("login").getAsJsonObject().get("salt").getAsString());
-            passwordDTO.setMd5(jsonObject.get("login").getAsJsonObject().get("md5").getAsString());
-            passwordDTO.setSha1(jsonObject.get("login").getAsJsonObject().get("sha1").getAsString());
-            passwordDTO.setSha256(jsonObject.get("login").getAsJsonObject().get("sha256").getAsString());
+            userDTO.setPassword(jsonObject.get("login").getAsJsonObject().get("password").getAsString());
+            userDTO.setSalt(jsonObject.get("login").getAsJsonObject().get("salt").getAsString());
+            userDTO.setMd5(jsonObject.get("login").getAsJsonObject().get("md5").getAsString());
+            userDTO.setSha1(jsonObject.get("login").getAsJsonObject().get("sha1").getAsString());
+            userDTO.setSha256(jsonObject.get("login").getAsJsonObject().get("sha256").getAsString());
 
-            userDTO.setPasswordDTO(passwordDTO);
             try {
                 userDTO.setDob(dateFormat.parse(jsonObject.get("dob").getAsJsonObject().get("date").getAsString()));
                 userDTO.setRegistered(dateFormat.parse(jsonObject.get("registered").getAsJsonObject().get("date").getAsString()));
@@ -116,7 +114,11 @@ public class UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setUsername(userDTO.getUsername());
-        user.setPassword(setPassword(userDTO.getPasswordDTO()));
+        user.setPassword(userDTO.getPassword());
+        user.setSalt(userDTO.getSalt());
+        user.setMd5(userDTO.getMd5());
+        user.setSha1(userDTO.getSha1());
+        user.setSha256(userDTO.getSha256());
         user.setDob(userDTO.getDob());
         user.setRegistered(userDTO.getRegistered());
         user.setPhone(userDTO.getPhone());
@@ -124,15 +126,6 @@ public class UserService {
         user.setPicture(setPicture(userDTO.getPictureDTO()));
         user.setNat(userDTO.getNat());
         user.setLocation(setLocation(userDTO.getLocationDTO()));
-    }
-    Password setPassword(PasswordDTO passwordDTO){
-        Password password = new Password();
-        password.setPassword(passwordDTO.getPassword());
-        password.setSalt(passwordDTO.getSalt());
-        password.setMd5(passwordDTO.getMd5());
-        password.setSha1(passwordDTO.getSha1());
-        password.setSha256(passwordDTO.getSha256());
-        return password;
     }
 
     Picture setPicture(PictureDTO pictureDTO){
