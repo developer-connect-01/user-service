@@ -41,4 +41,4 @@ Instructions to install and set up the project.
 ## Added Backend authentication
 - added Authentication using Spring security
 - Added a token based authentication
-- used [JWT Token](https://jwt.io/)
+- used [JWT Token](https://jwt.io/) ![image](https://github.com/developer-connect-01/user-service/assets/25847404/a372e9d3-1c6d-4dd2-a0b7-6e811f863fa0)
