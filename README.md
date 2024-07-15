@@ -37,6 +37,10 @@ Instructions to install and set up the project.
 ## Folder structure
 ![image](https://github.com/developer-connect-01/user-service/assets/25847404/434c725b-9e43-47c8-9726-636d6531b044)
 
+## Dependencies
+![image](https://github.com/user-attachments/assets/2ad24381-2e8c-415f-8417-61b8e45860d0)
+
+
 
 ## Added Backend authentication
 - added Authentication using Spring security
