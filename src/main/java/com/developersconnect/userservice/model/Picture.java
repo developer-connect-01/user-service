@@ -15,5 +15,5 @@ public class Picture {
     private String thumbnail;
 
     @OneToOne(mappedBy = "picture")
-    private AppUser user;
+    private User user;
 }

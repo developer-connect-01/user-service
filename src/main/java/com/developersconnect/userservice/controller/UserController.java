@@ -1,6 +1,6 @@
 package com.developersconnect.userservice.controller;
 
-import com.developersconnect.userservice.model.AppUser;
+import com.developersconnect.userservice.model.User;
 import com.developersconnect.userservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,27 +21,27 @@ public class UserController {
         return ResponseEntity.ok("Hello From secured end point");
     }
     @GetMapping
-    public List<AppUser> getAllUsers() {
+    public List<User> getAllUsers() {
         return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public Optional<AppUser> getUserById(@PathVariable Long id) {
+    public Optional<User> getUserById(@PathVariable Long id) {
         return userService.findById(id);
     }
 
     @PostMapping
-    public AppUser createUser(@RequestBody AppUser user) {
+    public User createUser(@RequestBody User user) {
         return userService.save(user);
     }
 
     @GetMapping("/fetch-user")
-    public List<AppUser> fetchAndSaveRandomUser() {
+    public List<User> fetchAndSaveRandomUser() {
         return userService.fetchAndSaveUserResponse();
     }
 
     @PutMapping("/{id}")
-    public AppUser updateUser(@PathVariable Long id, @RequestBody AppUser user) {
+    public User updateUser(@PathVariable Long id, @RequestBody User user) {
         user.setId(id);
         return userService.save(user);
     }

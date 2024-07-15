@@ -24,6 +24,6 @@ public class Location {
     private Street street;
 
     @OneToOne(mappedBy = "location")
-    private AppUser user;
+    private User user;
 
 }

@@ -4,7 +4,7 @@ import com.developersconnect.userservice.authentication.AuthenticationRequest;
 import com.developersconnect.userservice.authentication.AuthenticationResponse;
 import com.developersconnect.userservice.authentication.RegisterRequest;
 import com.developersconnect.userservice.configuration.JwtTokenProvider;
-import com.developersconnect.userservice.model.AppUser;
+import com.developersconnect.userservice.model.User;
 import com.developersconnect.userservice.model.enums.Role;
 import com.developersconnect.userservice.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = AppUser.builder()
+        var user = User.builder()
                 .firstName(request.getFirstname())
                 .lastName(request.getLastname())
                 .username(request.getUsername())

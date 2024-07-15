@@ -27,7 +27,7 @@ public class UserService {
 
     private static final String RANDOM_USER_API_URL = "https://randomuser.me/api/";
 
-    public List<AppUser> fetchAndSaveUserResponse() {
+    public List<User> fetchAndSaveUserResponse() {
         logger.info("Fetching random user data from API");
         String jsonString = restTemplate.getForObject(RANDOM_USER_API_URL, String.class);
         logger.debug("Fetched JSON string: {}", jsonString);
@@ -36,10 +36,10 @@ public class UserService {
             JsonObject jsonObject = jsonElement.getAsJsonObject();
             JsonArray jsonArray = jsonObject.getAsJsonArray("results");
 
-            List<AppUser> users = new ArrayList<>();
+            List<User> users = new ArrayList<>();
             List<UserDTO> results = mapUserDTO(jsonArray);
             for (UserDTO userDTO : results) {
-                AppUser user = new AppUser();
+                User user = new User();
                 mapUser(userDTO, user);
                 users.add(userRepository.save(user));
             }
@@ -107,7 +107,7 @@ public class UserService {
         return results;
     }
 
-    void mapUser(UserDTO userDTO, AppUser user){
+    void mapUser(UserDTO userDTO, User user){
         user.setGender(userDTO.getGender());
         user.setTitle(userDTO.getTitle());
         user.setFirstName(userDTO.getFirstName());
@@ -151,15 +151,15 @@ public class UserService {
         return location;
     }
 
-    public List<AppUser> findAll() {
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
-    public Optional<AppUser> findById(Long id) {
+    public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
-    public AppUser save(AppUser user) {
+    public User save(User user) {
         return userRepository.save(user);
     }
 
