@@ -1,17 +1,18 @@
 package com.developersconnect.userservice.authentication;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+
 @Builder
+@Getter
 @AllArgsConstructor
-@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class RegisterRequest {
-    private String firstname;
-    private String lastname;
-    private String username;
-    private String password;
+    private final String firstname;
+    private final String lastname;
+    private final String email;
+    private final String phone;
+    private final String username;
+    private final String password;
 }

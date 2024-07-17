@@ -12,8 +12,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+
 
 @Data
 @Builder
@@ -22,8 +23,16 @@ import java.util.List;
 @Entity
 public class User implements UserDetails {
 
+    @SequenceGenerator(
+            name = "student_sequence",
+            sequenceName = "student_sequence",
+            allocationSize = 1
+    )
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "student_sequence"
+    )
     private Long id;
     private String gender;
     private String title;
@@ -43,6 +52,53 @@ public class User implements UserDetails {
     private String phone;
     private String cell;
     private String nat;
+    private Boolean locked;
+    private Boolean enabled;
+
+    public User(String gender,
+                String title,
+                String firstName,
+                String lastName,
+                String email,
+                String username,
+                String password,
+                String salt,
+                String md5,
+                String sha1,
+                String sha256,
+                Role role,
+                Date dob,
+                Date registered,
+                String phone,
+                String cell,
+                String nat,
+                Boolean locked,
+                Boolean enabled,
+                Location location,
+                Picture picture
+    ) {
+        this.gender = gender;
+        this.title = title;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.salt = salt;
+        this.md5 = md5;
+        this.sha1 = sha1;
+        this.sha256 = sha256;
+        this.role = role;
+        this.dob = dob;
+        this.registered = registered;
+        this.phone = phone;
+        this.cell = cell;
+        this.nat = nat;
+        this.locked = locked;
+        this.enabled = enabled;
+        this.location = location;
+        this.picture = picture;
+    }
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id", referencedColumnName = "id")
@@ -58,7 +114,8 @@ public class User implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.name());
+        return Collections.singletonList(authority);
     }
 
     /**
@@ -89,7 +146,7 @@ public class User implements UserDetails {
      */
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !locked;
     }
 
     /**
@@ -105,6 +162,6 @@ public class User implements UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }
