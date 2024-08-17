@@ -2,11 +2,13 @@ package com.developersconnect.userservice.model;
 
 
 import com.developersconnect.userservice.model.enums.Role;
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,6 +38,7 @@ public class User implements UserDetails {
     private Long id;
     private String gender;
     private String title;
+    @Nonnull
     private String firstName;
     private String lastName;
     private String email;
@@ -57,7 +60,7 @@ public class User implements UserDetails {
 
     public User(String gender,
                 String title,
-                String firstName,
+                @NotNull String firstName,
                 String lastName,
                 String email,
                 String username,

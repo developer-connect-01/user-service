@@ -2,6 +2,7 @@ package com.developersconnect.userservice.service;
 
 import com.developersconnect.userservice.dto.*;
 import com.developersconnect.userservice.model.*;
+import com.developersconnect.userservice.model.enums.Role;
 import com.developersconnect.userservice.repository.UserRepository;
 import com.google.gson.*;
 import org.apache.logging.log4j.LogManager;
@@ -45,6 +46,9 @@ public class UserService implements UserDetailsService {
             for (UserDTO userDTO : results) {
                 User user = new User();
                 mapUser(userDTO, user);
+                if(user.getRole() == null){
+                    user.setRole(Role.USER);
+                }
                 users.add(userRepository.save(user));
             }
             return users;
